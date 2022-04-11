@@ -23,7 +23,7 @@ router.get('/:id', async (req: Request, res: Response) =>{
 
     if (!id){
         console.log('Invalid id');
-        res.status(400).send({message: 'Please supply a valid id'});
+        return res.status(400).send({message: 'Please supply a valid id'});
     }
 
 
@@ -40,11 +40,45 @@ router.get('/:id', async (req: Request, res: Response) =>{
 })
 
 // update a specific resource
+//@TODO try it yourself
 router.patch('/:id', 
-    requireAuth, 
+     requireAuth, 
     async (req: Request, res: Response) => {
-        //@TODO try it yourself
-        res.status(500).send("not implemented")
+        let {id} = req.params;
+        let {caption, url } = req.body;
+    
+
+        if (!id){
+            return res.status(400).
+            send({message: 'Please supply a valid id'});
+        }
+
+        const item: FeedItem = await FeedItem.findByPk(id);
+
+            if (item === null){
+                return res.status(404).send('This ID is not found');
+            }
+
+            if(!caption){
+                return res.status(400).
+                send({message: 'Caption is required or malformed'});
+            }
+
+            if(!url){
+                return res.status(400).
+                send({message: 'URL/ FileName is required'});
+            }
+
+            item.url = url;
+            item.caption = caption;
+            //item.save();
+            item.update({url: url, caption: caption}).
+            then(() => {
+                console.log('Updated');
+            });
+
+
+        res.status(200).send('Record updated');
 });
 
 
