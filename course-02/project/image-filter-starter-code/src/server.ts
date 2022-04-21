@@ -9,6 +9,9 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
 
   // Set the network port
   const port = process.env.PORT || 8082;
+
+  //Import is-image-URL package
+  const isImageURL = require('is-image-URL');
   
   // Use the body parser middleware for post requests
   app.use(bodyParser.json());
@@ -30,6 +33,33 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
   /**************************************************************************** */
 
   //! END @TODO1
+
+  app.get("/filteredimage/", 
+  async (req , res) => {
+    let {image_url} = req.query;
+
+    if (isImageURL(image_url)){
+      console.log('Invalid URL');
+      return res.status(400).send('Image URL invalid');
+    } 
+
+    try {
+      console.log(image_url);
+      const filteredPath = await filterImageFromURL(image_url);
+     
+      res.sendFile(filteredPath, () =>
+      {deleteLocalFiles([filteredPath]);});
+      // deleteLocalFiles([filteredPath])
+    } 
+    catch (e) {
+      res.status(404).send(e);
+      console.log ("Error")
+    }
+
+    // console.log('Valid URL entered');
+
+
+  });
   
   // Root Endpoint
   // Displays a simple message to the user
