@@ -12,7 +12,10 @@ import { is } from 'bluebird';
   const port = process.env.PORT || 8082;
 
   //Import is-image-URL package
-  const isImageURL = require('is-image-URL');
+  // const isImageURL = require('is-image-URL');
+
+  //Import valid URL package
+  var validURL = require('valid-url');
   
   // Use the body parser middleware for post requests
   app.use(bodyParser.json());
@@ -39,7 +42,7 @@ import { is } from 'bluebird';
   async (req , res) => {
     let {image_url} = req.query;
 
-    if (isImageURL(image_url)){
+    if (!validURL.isUri(image_url)){
       //console.log('Invalid URL');
       return res.status(400).send('Image URL invalid');
     } 
@@ -54,7 +57,7 @@ import { is } from 'bluebird';
       // deleteLocalFiles([filteredPath])
     } 
     catch (e) {
-      res.status(404).send(e);
+      res.status(404).send("Image URL invalid");
       console.log ("Error")
     }
 
