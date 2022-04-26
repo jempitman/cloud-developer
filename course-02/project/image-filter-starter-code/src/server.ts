@@ -1,6 +1,7 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import {filterImageFromURL, deleteLocalFiles} from './util/util';
+import { is } from 'bluebird';
 
 (async () => {
 
@@ -39,14 +40,15 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
     let {image_url} = req.query;
 
     if (isImageURL(image_url)){
-      console.log('Invalid URL');
+      //console.log('Invalid URL');
       return res.status(400).send('Image URL invalid');
     } 
 
     try {
-      //console.log(image_url);
+      console.log(image_url);
       const filteredPath = await filterImageFromURL(image_url);
      
+      console.log("image filtered")
       res.sendFile(filteredPath, () =>
       {deleteLocalFiles([filteredPath]);});
       // deleteLocalFiles([filteredPath])
