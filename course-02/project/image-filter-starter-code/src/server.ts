@@ -38,21 +38,28 @@ import { is } from 'bluebird';
 
   //! END @TODO1
 
-  app.get("/filteredimage/", 
-  async (req , res) => {
+  // //old get request
+  // app.get("/filteredimage/", 
+  // async (req , res) => {
+
+    //get request suggested by Reviewer
+  app.get( "/filteredimage/", async (req:express.Request, res:express.Response) => {
     let {image_url} = req.query;
 
     //Check if image_url is empty
     if (!image_url){
-      console.log('URL not provided');
+      //console.log('URL not provided');
       return res.status(400).send('Empty URL, please provide a valid URL');
     } 
 
     try {
       // console.log(image_url);
+      //send image to filtering function
       const filteredPath = await filterImageFromURL(image_url);
      
-      console.log("image filtered")
+      // console.log("image filtered")
+
+      //clean up locally saved filtered image
       res.sendFile(filteredPath, () =>
       {deleteLocalFiles([filteredPath]);});
       // deleteLocalFiles([filteredPath])
