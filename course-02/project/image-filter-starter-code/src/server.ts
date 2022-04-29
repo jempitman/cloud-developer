@@ -42,13 +42,14 @@ import { is } from 'bluebird';
   async (req , res) => {
     let {image_url} = req.query;
 
-    if (!validURL.isUri(image_url)){
-      //console.log('Invalid URL');
-      return res.status(400).send('Image URL invalid');
+    //Check if image_url is empty
+    if (!image_url){
+      console.log('URL not provided');
+      return res.status(400).send('Empty URL, please provide a valid URL');
     } 
 
     try {
-      console.log(image_url);
+      // console.log(image_url);
       const filteredPath = await filterImageFromURL(image_url);
      
       console.log("image filtered")
@@ -57,8 +58,8 @@ import { is } from 'bluebird';
       // deleteLocalFiles([filteredPath])
     } 
     catch (e) {
-      res.status(404).send("Image URL invalid");
-      console.log ("Error")
+      res.status(404).send("URL not found, please provide a valid URL");
+      // console.log ("")
     }
 
     // console.log('Valid URL entered');
